@@ -2,7 +2,6 @@ const db = require("../models");
 const config = require("../config/auth.config");
 var bcrypt = require("bcryptjs");
 const StudentRegistration = db.studentregistration;
-const Role = db.role;
 var jwt = require("jsonwebtoken");
 
 exports.studentSignUp = (req, res) => {
@@ -15,7 +14,6 @@ exports.studentSignUp = (req, res) => {
     gender: req.body.gender,
     studentmobile: req.body.studentmobile,
     password: bcrypt.hashSync(req.body.password, 8),
-    roles: db.role.id,
   });
 
   studentRegistration.save(studentRegistration).then((y) => {
@@ -32,13 +30,14 @@ exports.studentSignUp = (req, res) => {
       },
     });
     var mailOptions = {
-      from: '"Academia.... 👻" <ravisenjaliya99@gmail.com>', // sender address
+      from: '"Academia....📚" <ravisenjaliya99@gmail.com>', // sender address
       to: req.body.email,
       subject: "Hello ✔", // Subject line
       text: "Hello world?", // plain text body
       html: `
       <div>
-        <p>Here are your login details:</p>
+      <img src="https://visme.co/blog/wp-content/uploads/2020/02/header-1200.gif" alt="img" width="100%"/>
+        <h3>Here are your login details:</h3>
         <p>User ID: ${req.body.email}</p>
         <p>Password: ${req.body.password}</p>
       </div>
@@ -53,21 +52,9 @@ exports.studentSignUp = (req, res) => {
     });
     // =======================================================================
 
-    if (req.body.roles) {
-      Role.find({ name: { $in: req.body.roles } }).then((roles) => {
-        studentRegistration.roles = roles.map((role) => role._id);
-        studentRegistration.save(studentRegistration).then((err) => {
-          res.send({ message: "Faculty was registered successfully!" });
-        });
-      });
-    } else {
-      Role.findOne({ name: "admin" }).then((role) => {
-        console.log(role);
-        studentRegistration.save().then((err) => {
-          res.send({ message: "Faculty was registered successfully!" });
-        });
-      });
-    }
+    studentRegistration.save(studentRegistration).then((err) => {
+      res.send({ message: "Student was registered successfully!" });
+    });
   });
 };
 
@@ -75,7 +62,6 @@ exports.studentSignin = (req, res) => {
   StudentRegistration.findOne({
     email: req.body.email,
   })
-    .populate("roles", "-__v")
     .exec()
     .then((user) => {
       if (!user) {
@@ -98,11 +84,6 @@ exports.studentSignin = (req, res) => {
         expiresIn: 86400, // 24 hours
       });
 
-      var authorities = [];
-
-      for (let i = 0; i < user.roles.length; i++) {
-        authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
-      }
       res.status(200).send({
         id: user._id,
         email: user.email,
@@ -112,7 +93,6 @@ exports.studentSignin = (req, res) => {
         name: user.name,
         studentmobile: user.studentmobile,
         password: user.password,
-        roles: authorities,
         accessToken: token,
       });
     });

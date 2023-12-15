@@ -37,7 +37,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // =========================================================================
 //routes mathi app import kravyu(route import)
-require("./routes/admission.routes")(app);
 require("./routes/facultyregistration.routes")(app);
 require("./routes/studentregistration.routes")(app);
 
@@ -45,7 +44,7 @@ require("./routes/studentregistration.routes")(app);
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Shital Academy application." });
+  res.json({ message: "Welcome to academia application." });
 });
 
 const PORT = process.env.PORT || 9999;

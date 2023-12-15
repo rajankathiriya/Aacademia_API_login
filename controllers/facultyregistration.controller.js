@@ -2,7 +2,6 @@ const db = require("../models");
 const config = require("../config/auth.config");
 var bcrypt = require("bcryptjs");
 const FacultyRegistration = db.facultyregistration;
-const Role = db.role;
 var jwt = require("jsonwebtoken");
 
 exports.facultySignUp = (req, res) => {
@@ -14,7 +13,6 @@ exports.facultySignUp = (req, res) => {
     role: req.body.role,
     password: bcrypt.hashSync(req.body.password, 8),
     confirmPassword: bcrypt.hashSync(req.body.password, 8),
-    roles: db.role.id,
   });
 
   facultyRegistration.save(facultyRegistration).then((y) => {
@@ -31,13 +29,14 @@ exports.facultySignUp = (req, res) => {
       },
     });
     var mailOptions = {
-      from: '"Academia.... 👻" <ravisenjaliya99@gmail.com>', // sender address
+      from: '"Academia....📚" <ravisenjaliya99@gmail.com>', // sender address
       to: req.body.email,
       subject: "Hello ✔", // Subject line
       text: "Hello world?", // plain text body
       html: `
       <div>
-        <p>Here are your login details:</p>
+      <img src="https://visme.co/blog/wp-content/uploads/2020/02/header-1200.gif" alt="img" width="100%"/>
+        <h3>Here are your login details:</h3>
         <p>User ID: ${req.body.email}</p>
         <p>Password: ${req.body.password}</p>
       </div>
@@ -52,21 +51,9 @@ exports.facultySignUp = (req, res) => {
     });
     // =======================================================================
 
-    if (req.body.roles) {
-      Role.find({ name: { $in: req.body.roles } }).then((roles) => {
-        facultyRegistration.roles = roles.map((role) => role._id);
-        facultyRegistration.save(facultyRegistration).then((err) => {
-          res.send({ message: "Faculty was registered successfully!" });
-        });
-      });
-    } else {
-      Role.findOne({ name: "admin" }).then((role) => {
-        console.log(role);
-        facultyRegistration.save().then((err) => {
-          res.send({ message: "Faculty was registered successfully!" });
-        });
-      });
-    }
+    facultyRegistration.save(facultyRegistration).then((err) => {
+      res.send({ message: "Faculty was registered successfully!" });
+    });
   });
 };
 
@@ -74,7 +61,6 @@ exports.facultySignin = (req, res) => {
   FacultyRegistration.findOne({
     email: req.body.email,
   })
-    .populate("roles", "-__v")
     .exec()
     .then((user) => {
       if (!user) {
@@ -97,11 +83,6 @@ exports.facultySignin = (req, res) => {
         expiresIn: 86400, // 24 hours
       });
 
-      var authorities = [];
-
-      for (let i = 0; i < user.roles.length; i++) {
-        authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
-      }
       res.status(200).send({
         id: user._id,
         email: user.email,
@@ -109,7 +90,6 @@ exports.facultySignin = (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         role: user.role,
-        roles: authorities,
         accessToken: token,
       });
     });
@@ -194,13 +174,13 @@ exports.update = (req, res) => {
     .then((data) => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot update student with id=${id}. Maybe student was not found!`,
+          message: `Cannot update faculty with id=${id}. Maybe faculty was not found!`,
         });
-      } else res.send({ message: "Student was updated successfully." });
+      } else res.send({ message: "faculty was updated successfully." });
     })
     .catch((err) => {
       res.status(500).send({
-        message: "Error updating student with id=" + id,
+        message: "Error updating faculty with id=" + id,
       });
     });
 };

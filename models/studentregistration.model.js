@@ -10,12 +10,6 @@ module.exports = (mongoose) => {
       gender: String,
       password: String,
       dumID: String,
-      roles: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Role",
-        },
-      ],
     })
   );
 

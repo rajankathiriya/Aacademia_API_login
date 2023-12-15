@@ -9,12 +9,6 @@ module.exports = (mongoose) => {
       password: String,
       role: String,
       confirmPassword: String,
-      roles: [
-        {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Role",
-        },
-      ],
     })
   );
 
