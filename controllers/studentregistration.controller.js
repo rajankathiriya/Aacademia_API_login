@@ -32,8 +32,7 @@ exports.studentSignUp = (req, res) => {
     var mailOptions = {
       from: '"Academia....📚" <ravisenjaliya99@gmail.com>', // sender address
       to: req.body.email,
-      subject: "Hello ✔", // Subject line
-      text: "Hello world?", // plain text body
+      subject: "Login Credentials 🔐", // Subject line
       html: `
       <div>
       <img src="https://visme.co/blog/wp-content/uploads/2020/02/header-1200.gif" alt="img" width="100%"/>
