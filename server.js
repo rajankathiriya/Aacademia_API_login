@@ -1,17 +1,13 @@
-// ==============================================================================
 const express = require("express");
 const cors = require("cors");
 
 const app = express();
 
-// =========================================================================
 //react na localhost sathe connect krva mate
 var corsOptions = {
   origin: "*",
 };
-// =========================================================================
 
-// =========================================================================
 //server ne mongoos sathe connect krva mate
 const db = require("./models");
 db.mongoose
@@ -27,7 +23,6 @@ db.mongoose
     process.exit();
   });
 app.use(cors(corsOptions));
-// =========================================================================
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -36,6 +31,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // =========================================================================
+
 //routes mathi app import kravyu(route import)
 require("./routes/facultyregistration.routes")(app);
 require("./routes/studentregistration.routes")(app);
