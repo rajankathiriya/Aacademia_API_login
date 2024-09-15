@@ -66,7 +66,7 @@ exports.facultySignin = (req, res) => {
         return res.status(404).send({ message: "User Not found." });
       }
 
-      var passwordIsValid = bcrypt.compareSync(
+      var passwordIsValid = (
         req.body.password,
         user.password
       );
